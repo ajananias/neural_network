@@ -3,4 +3,5 @@
 /mnist_test.csv
 /mnist_train.csv
 /my_num
+/other_num
 __pycache__/
