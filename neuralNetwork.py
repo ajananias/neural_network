@@ -12,6 +12,7 @@ class neuralNetwork:
         self.who = np.random.normal(0.0, pow(self.onodes, -0.5), (self.onodes, self.hnodes)) #W_ho transposed
         # activation function: sigmoid
         self.activation_function = lambda x: scipy.special.expit(x)
+        self.inverse_activation_function = lambda x: scipy.special.logit(x)
 
     def train(self, inputs_list, targets_list):
         inputs = np.array(inputs_list, ndmin=2).T
@@ -44,3 +45,19 @@ class neuralNetwork:
         final_outputs = self.activation_function(final_inputs)
 
         return final_outputs
+    
+    def backquery(self, targets_list):
+        final_outputs = np.array(targets_list, ndmin=2).T
+        final_inputs = self.inverse_activation_function(final_outputs)
+        hidden_outputs = np.dot(self.who.T, final_inputs)
+        hidden_outputs -= np.min(hidden_outputs)
+        hidden_outputs /= np.max(hidden_outputs)
+        hidden_outputs *= 0.98
+        hidden_outputs += 0.01
+        hidden_inputs = self.inverse_activation_function(hidden_outputs)
+        inputs = np.dot(self.wih.T, hidden_inputs)
+        inputs -= np.min(inputs)
+        inputs /= np.max(inputs)
+        inputs *= 0.98
+        inputs += 0.01
+        return inputs
